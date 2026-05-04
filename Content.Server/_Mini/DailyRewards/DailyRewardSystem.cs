@@ -81,6 +81,7 @@ public sealed class DailyRewardSystem : EntitySystem
 
         EnsureCurrentDay(state.Progress, DateTime.UtcNow);
         state.Progress.PendingActiveTime = activeTime < TimeSpan.Zero ? TimeSpan.Zero : activeTime;
+        state.MarkMutated();
         _ = _db.UpsertDailyRewardProgress(state.Progress);
         return true;
     }
@@ -93,6 +94,7 @@ public sealed class DailyRewardSystem : EntitySystem
 
         var component = TryGetComponentFor(userId) ?? _defaultComponent;
         state.Progress.CurrentStreak = Math.Clamp(streak, 0, component.MaxStreak);
+        state.MarkMutated();
         _ = _db.UpsertDailyRewardProgress(state.Progress);
         return true;
     }
@@ -104,6 +106,7 @@ public sealed class DailyRewardSystem : EntitySystem
             return false;
 
         state.Progress.LastClaimTime = lastClaimTimeUtc;
+        state.MarkMutated();
         _ = _db.UpsertDailyRewardProgress(state.Progress);
         return true;
     }
@@ -119,6 +122,7 @@ public sealed class DailyRewardSystem : EntitySystem
         EnsureCurrentDay(state.Progress, DateTime.UtcNow);
         state.Progress.PendingActiveTime = component.MinimumActiveTime;
         state.Progress.LastClaimTime = DateTime.UtcNow - component.ClaimCooldown - TimeSpan.FromMinutes(1);
+        state.MarkMutated();
         _ = _db.UpsertDailyRewardProgress(state.Progress);
         return true;
     }
@@ -135,6 +139,7 @@ public sealed class DailyRewardSystem : EntitySystem
         state.Progress.PendingActiveTime = TimeSpan.Zero;
         state.ActiveSince = null;
         state.ActiveStartedAtUtc = null;
+        state.MarkMutated();
         _ = _db.UpsertDailyRewardProgress(state.Progress);
         return true;
     }
@@ -165,6 +170,13 @@ public sealed class DailyRewardSystem : EntitySystem
     private async Task LoadPlayerData(ICommonSession player, CancellationToken cancel)
     {
         var progress = await _db.GetDailyRewardProgress(player.UserId.UserId, cancel);
+        if (_states.TryGetValue(player.UserId, out var existingState))
+        {
+            // Keep local/admin changes that happened before async DB load completed.
+            if (existingState.LocalMutationCount > 0)
+                return;
+        }
+
         _states[player.UserId] = new SessionRewardState(progress ?? new DailyRewardProgress
         {
             PlayerId = player.UserId.UserId,
@@ -295,8 +307,7 @@ public sealed class DailyRewardSystem : EntitySystem
             return;
         }
 
-        if (state.Progress.LastClaimTime != null &&
-            now - state.Progress.LastClaimTime.Value > component.ExpirationWindow)
+        if (IsStreakExpired(state.Progress.LastClaimTime, component, now))
         {
             state.Progress.CurrentStreak = 0;
         }
@@ -341,6 +352,7 @@ public sealed class DailyRewardSystem : EntitySystem
         state.Progress.CurrentStreak = nextDay;
         state.Progress.LastClaimTime = now;
         state.Progress.PendingActiveTime = TimeSpan.Zero;
+        state.MarkMutated();
 
         // Grant tickets for streak milestones
         GrantTicketsForStreak(session, nextDay);
@@ -356,7 +368,7 @@ public sealed class DailyRewardSystem : EntitySystem
         EnsureCurrentDay(progress, now);
 
         var currentStreak = progress.CurrentStreak;
-        if (progress.LastClaimTime != null && now - progress.LastClaimTime.Value > component.ExpirationWindow)
+        if (IsStreakExpired(progress.LastClaimTime, component, now))
             currentStreak = 0;
 
         nextDay = Math.Clamp(currentStreak + 1, 1, component.MaxStreak);
@@ -382,7 +394,7 @@ public sealed class DailyRewardSystem : EntitySystem
 
         var lastClaim = state.Progress.LastClaimTime;
         var visibleStreak = state.Progress.CurrentStreak;
-        if (lastClaim != null && now - lastClaim.Value > component.ExpirationWindow)
+        if (IsStreakExpired(lastClaim, component, now))
             visibleStreak = 0;
 
         var nextDay = Math.Clamp(visibleStreak + 1, 1, component.MaxStreak);
@@ -464,6 +476,18 @@ public sealed class DailyRewardSystem : EntitySystem
     private static TimeSpan MaxZero(TimeSpan span)
     {
         return span < TimeSpan.Zero ? TimeSpan.Zero : span;
+    }
+
+    private static bool IsStreakExpired(DateTime? lastClaimTime, DailyRewardComponent component, DateTime nowUtc)
+    {
+        if (lastClaimTime == null)
+            return false;
+
+        var lastClaim = lastClaimTime.Value;
+        if (nowUtc - lastClaim <= component.ExpirationWindow)
+            return false;
+
+        return nowUtc.Date > lastClaim.Date.AddDays(1);
     }
 
     private DailyRewardComponent? TryGetComponentFor(NetUserId userId)
@@ -648,6 +672,12 @@ public sealed class DailyRewardSystem : EntitySystem
         public DailyRewardProgress Progress { get; } = progress;
         public TimeSpan? ActiveSince { get; set; }
         public DateTime? ActiveStartedAtUtc { get; set; }
+        public int LocalMutationCount { get; private set; }
+
+        public void MarkMutated()
+        {
+            LocalMutationCount++;
+        }
     }
 
     private readonly record struct RewardDefinition(string? DisplayName, int TokenAmount, string IconPath, string? RoleUnlockRoleId);
