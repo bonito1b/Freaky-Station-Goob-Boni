@@ -1,5 +1,5 @@
 - type: entity
-  parent: [ MobAbductor, MobBaseNPC ]
+  parent: [ MobAbductor ]
   id: MobSimpleAbductorAgentPistol
   name: abductor agent
   suffix: AI, Alien Pistol
@@ -23,7 +23,7 @@
     - AbductorAgentNpcGear
 
 - type: entity
-  parent: [ MobAbductor, MobBaseNPC ]
+  parent: [ MobAbductor ]
   id: MobSimpleAbductorAgentWonderprod
   name: abductor agent
   suffix: AI, Wonderprod

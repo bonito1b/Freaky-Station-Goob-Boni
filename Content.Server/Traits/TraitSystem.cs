@@ -92,7 +92,10 @@ public sealed class TraitSystem : EntitySystem
             if (traitPrototype.RemoveLanguagesUnderstood is not null)
             {
                 foreach (var lang in traitPrototype.RemoveLanguagesUnderstood)
-                    language.RemoveLanguage(args.Mob, lang, false, true);
+                {
+                    language.RemoveLanguage(mob, lang, false);
+                }
+            }
 
             if (traitPrototype.LanguagesSpoken is not null)
             {
@@ -105,7 +108,10 @@ public sealed class TraitSystem : EntitySystem
             if (traitPrototype.LanguagesUnderstood is not null)
             {
                 foreach (var lang in traitPrototype.LanguagesUnderstood)
-                    language.AddLanguage(args.Mob, lang, false, true);
+                {
+                    language.AddLanguage(mob, lang, false);
+                }
+            }
             // Einstein Engines - Language end
 
             // Add item required by the trait

@@ -66,6 +66,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Content.Shared.DeviceNetwork.Components;
+using Content.Shared.Silicons.StationAi;
 
 namespace Content.Server.SurveillanceCamera;
 
@@ -79,6 +80,7 @@ public sealed class SurveillanceCameraSystem : EntitySystem
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly TransformSystem _transformSystem = default!; // Goobstation
     [Dependency] private readonly IAdminLogManager _adminLogger = default!;
+    [Dependency] private readonly SharedStationAiSystem _stationAiSystem = default!;
 
 
     // Pings a surveillance camera subnet. All cameras will always respond
