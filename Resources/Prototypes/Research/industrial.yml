@@ -86,6 +86,10 @@
   - MechEquipmentDrill # Goobstation
   - MineralScannerEmpty
   - OreProcessorIndustrialMachineCircuitboard
+  - QuantumConsoleCircuitboard # Orion
+  - QuantumServerMachineCircuitboard # Orion
+  - NetpodMachineCircuitboard # Orion
+  - ByteforgeMachineCircuitboard # Orion
   - ClothingMaskWeldingGas
   - ClothingShoesBootsJump
   # Goobstation R&D Console rework start
