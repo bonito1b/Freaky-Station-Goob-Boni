@@ -34,3 +34,7 @@
 - type: entity
   parent: WeaponSniperHristov
   id: WeaponEarthGovLaserSniper
+
+- type: entity
+  parent: StatueVenusRed
+  id: StatueBustDecoration
