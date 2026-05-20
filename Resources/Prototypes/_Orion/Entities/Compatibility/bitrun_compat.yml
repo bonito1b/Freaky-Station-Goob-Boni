@@ -64,5 +64,9 @@
   id: MagazineRifle762Sniper
 
 - type: entity
+  parent: WeaponPistolMk58
+  id: WeaponPistolG22
+
+- type: entity
   parent: SuitStorageEVA
   id: SuitStorageExplorerSuit
