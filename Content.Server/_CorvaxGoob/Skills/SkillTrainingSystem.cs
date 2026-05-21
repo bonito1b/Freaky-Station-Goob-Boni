@@ -721,7 +721,9 @@ public sealed class SkillTrainingSystem : EntitySystem
                 && TryGetSkillBookInHand(args.User, ent.Comp.Skill, out var heldBook)
                 ? heldBook
                 : (EntityUid?)null;
-            StartDoAfterTraining(args.User, student, book, ent.Comp);
+            if (!StartDoAfterTraining(args.User, student, book, ent.Comp))
+
+                return;
 
             _popup.PopupEntity(
 
@@ -755,7 +757,7 @@ public sealed class SkillTrainingSystem : EntitySystem
 
 
 
-    private void StartDoAfterTraining(EntityUid teacher, EntityUid student, EntityUid? book, SkillTrainingStudentComponent studentComp)
+    private bool StartDoAfterTraining(EntityUid teacher, EntityUid student, EntityUid? book, SkillTrainingStudentComponent studentComp)
 
     {
 
@@ -770,25 +772,32 @@ public sealed class SkillTrainingSystem : EntitySystem
 
 
 
-        if (!TryBeginTrainingDoAfter(teacher, student, args))
+        if (TryBeginTrainingDoAfter(teacher, student, args))
 
-        {
+            return true;
 
-            RemComp<SkillTrainingStudentComponent>(student);
+        RemComp<SkillTrainingStudentComponent>(student);
 
-            ClearActiveTraining(teacher);
+        ClearActiveTraining(teacher);
 
-        }
+        return false;
 
     }
 
-    private void ApplyTeachingDoAfterRules(DoAfterArgs args)
+    private void ApplyTeachingDoAfterRules(DoAfterArgs args, bool continuingSession = false)
     {
         args.RequireCanInteract = false;
         args.DistanceThreshold = args.Target != null ? TrainingInteractionRange : null;
-        args.BlockDuplicate = true;
+        args.BlockDuplicate = !continuingSession;
         args.CancelDuplicate = false;
         args.DuplicateCondition = DuplicateConditions.All;
+    }
+
+    private bool IsContinuingTrainingSession(SkillTrainingTeacherComponent comp, EntityUid sessionEntity)
+    {
+        return comp.ActiveStudent is { } active
+               && TryGetEntity(active, out var activeEntity)
+               && activeEntity == sessionEntity;
     }
 
     private bool CanStartTrainingSession(EntityUid teacher, EntityUid sessionEntity, out string failLocale)
@@ -802,7 +811,9 @@ public sealed class SkillTrainingSystem : EntitySystem
             return false;
         }
 
-        if (HasComp<ActiveDoAfterComponent>(teacher))
+        var continuing = IsContinuingTrainingSession(comp, sessionEntity);
+
+        if (!continuing && HasComp<ActiveDoAfterComponent>(teacher))
             return false;
 
         if (comp.ActiveStudent is { } active
@@ -821,7 +832,10 @@ public sealed class SkillTrainingSystem : EntitySystem
             return false;
         }
 
-        ApplyTeachingDoAfterRules(args);
+        var continuing = TryComp<SkillTrainingTeacherComponent>(teacher, out var teacherComp)
+                           && IsContinuingTrainingSession(teacherComp, sessionEntity);
+
+        ApplyTeachingDoAfterRules(args, continuing);
 
         if (args.Target != null
             && !_interaction.InRangeUnobstructed(teacher, args.Target.Value, TrainingInteractionRange))
