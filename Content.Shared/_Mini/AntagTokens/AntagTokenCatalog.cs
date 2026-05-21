@@ -91,6 +91,17 @@ public static class AntagTokenCatalog
     {
         return $"ghost-auto-pending:{roleId}";
     }
+
+    /// <summary>
+    /// Simple roles that may be purchased again even if bought in the previous round.
+    /// </summary>
+    public static bool IsExemptFromLastRoundPurchaseRepeat(string roleId, AntagPurchaseMode mode)
+    {
+        if (mode == AntagPurchaseMode.GhostRule)
+            return true;
+
+        return roleId is ThiefRole or AgentRole;
+    }
 }
 
 public enum AntagPurchaseMode : byte

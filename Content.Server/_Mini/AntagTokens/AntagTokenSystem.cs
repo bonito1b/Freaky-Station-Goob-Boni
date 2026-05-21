@@ -1429,7 +1429,9 @@ public sealed class AntagTokenSystem : EntitySystem
             return false;
         }
 
-        if (!purchased && _lastRoundPurchasedRoles.Contains(role.Id))
+        if (!purchased &&
+            !AntagTokenCatalog.IsExemptFromLastRoundPurchaseRepeat(role.Id, role.Mode) &&
+            _lastRoundPurchasedRoles.Contains(role.Id))
         {
             statusLocKey = "antag-store-status-last-round-purchased";
             return false;
