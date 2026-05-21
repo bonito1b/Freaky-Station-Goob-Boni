@@ -3,6 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using Content.Shared.Humanoid.Prototypes;
+using Content.Shared.Roles;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Mini.AntagTokens;
 
@@ -114,4 +117,6 @@ public sealed record AntagRoleDefinition(
     string? UnavailableReasonLocKey = null,
     string? GhostRulesLocKey = null,
     string? GhostAutoJoinEntityProto = null,
-    int FreeMinimumSponsorLevel = -1);
+    int FreeMinimumSponsorLevel = -1,
+    IReadOnlyList<ProtoId<JobPrototype>>? JobBlacklist = null,
+    IReadOnlyList<ProtoId<SpeciesPrototype>>? SpeciesBlacklist = null);
