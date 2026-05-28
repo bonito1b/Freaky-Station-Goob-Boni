@@ -1,0 +1,72 @@
+- type: entity
+  parent: BriefcaseBrown
+  id: CaseSecurityDragunov
+
+- type: entity
+  parent: BriefcaseBrown
+  id: CaseSecurityMini
+
+- type: entity
+  parent: BaseStructure
+  id: DocumentPrinter
+
+- type: entity
+  parent: ResearchDisk
+  id: ResearchDataDisk
+
+- type: entity
+  parent: MarkerBase
+  id: SpawnLandMineExplosiveRandom
+  categories: [ Spawner ]
+  components:
+  - type: ConditionalSpawner
+    prototypes:
+    - LandMineExplosive
+
+- type: entity
+  parent: ClothingBackpackDuffelSurgeryFilled
+  id: SurgerykitFilled
+
+- type: entity
+  parent: WallSolid
+  id: WallBinaryIndestructible
+
+- type: entity
+  parent: WeaponSniperHristov
+  id: WeaponEarthGovLaserSniper
+
+- type: entity
+  parent: WeaponLaserCarbine
+  id: WeaponEarthGovLaserRifle
+
+- type: entity
+  parent: StatueVenusRed
+  id: StatueBustDecoration
+
+- type: entity
+  parent: ClothingOuterCoatCaptain
+  id: ClothingOuterCoatCaptainWhite
+
+- type: entity
+  parent: Bed
+  id: DoubleBed
+
+- type: entity
+  parent: BedsheetClown
+  id: DoubleBedsheetClown
+
+- type: entity
+  parent: WeaponSniperHristov
+  id: WeaponRifleDragunov
+
+- type: entity
+  parent: MagazineAntiMateriel
+  id: MagazineRifle762Sniper
+
+- type: entity
+  parent: WeaponPistolMk58
+  id: WeaponPistolG22
+
+- type: entity
+  parent: SuitStorageEVA
+  id: SuitStorageExplorerSuit
