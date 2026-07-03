@@ -1,0 +1,21 @@
+﻿// ACES Filmic Tone Mapping with adjustable exposure
+uniform sampler2D SCREEN_TEXTURE;
+uniform highp float EXPOSURE = 1.0;
+
+void fragment() {
+    highp vec3 color = zTextureSpec(SCREEN_TEXTURE, UV).rgb;
+    
+    // Apply exposure
+    color *= EXPOSURE;
+    
+    // ACES filmic approximation (Narkowicz 2015)
+    highp vec3 a = color * (color + 0.0245786) - 0.000090537;
+    highp vec3 b = color * (0.983729 * color + 0.4329510) + 0.238081;
+    color = a / b;
+    
+    // Clamp
+    color = clamp(color, 0.0, 1.0);
+    
+    highp vec4 original = zTextureSpec(SCREEN_TEXTURE, UV);
+    COLOR = vec4(color, original.a);
+}

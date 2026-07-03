@@ -1,0 +1,24 @@
+﻿// Animated Glints shader for individual sprites (weapons, doors, monitors, glass panels)
+// A periodic light streak sweeps across the sprite
+// Use on sprites with: shader: Glints
+
+void fragment() {
+    highp vec4 color = zTexture(UV);
+    
+    // Animated streak position (0 to 1, looping every ~6 seconds)
+    highp float streakPos = fract(TIME * 0.17);
+    
+    // Distance from the streak center along X axis
+    highp float dist = abs(UV.x - streakPos);
+    
+    // Sharp but smooth streak (gaussian-like)
+    highp float streak = exp(-dist * dist * 80.0);
+    
+    // Only show on non-transparent pixels
+    highp float alphaMask = step(0.1, color.a);
+    
+    // Subtle white-cyan tint, low intensity
+    highp vec3 glintColor = vec3(0.8, 0.9, 1.0) * streak * alphaMask * 0.15;
+    
+    COLOR = vec4(color.rgb + glintColor, color.a);
+}

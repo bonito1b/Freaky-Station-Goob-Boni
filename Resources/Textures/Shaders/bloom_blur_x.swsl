@@ -1,0 +1,31 @@
+﻿// Bloom bright-pass + horizontal blur
+// Extracts bright pixels above threshold and blurs horizontally
+uniform sampler2D SCREEN_TEXTURE;
+uniform highp float BLOOM_THRESHOLD = 0.7;
+uniform highp float BLOOM_INTENSITY = 1.0;
+uniform highp float BLUR_RADIUS = 2.0;
+
+void fragment() {
+    highp vec4 color = zTextureSpec(SCREEN_TEXTURE, UV);
+    
+    // Bright-pass: extract pixels above threshold using luminance
+    highp float luma = zGrayscale(color.rgb);
+    highp float bright = max(0.0, luma - BLOOM_THRESHOLD) / max(0.001, 1.0 - BLOOM_THRESHOLD);
+    bright = smoothstep(0.0, 1.0, bright);
+    
+    // Horizontal blur with 9-tap gaussian
+    highp vec2 dir = vec2(1.0, 0.0) * SCREEN_PIXEL_SIZE * BLUR_RADIUS;
+    highp vec3 sum = vec3(0.0);
+    
+    sum += zTextureSpec(SCREEN_TEXTURE, UV).rgb * 0.227027;
+    sum += zTextureSpec(SCREEN_TEXTURE, UV + dir * 1.3846153846).rgb * 0.1945946;
+    sum += zTextureSpec(SCREEN_TEXTURE, UV - dir * 1.3846153846).rgb * 0.1945946;
+    sum += zTextureSpec(SCREEN_TEXTURE, UV + dir * 3.2307692308).rgb * 0.1216216;
+    sum += zTextureSpec(SCREEN_TEXTURE, UV - dir * 3.2307692308).rgb * 0.1216216;
+    sum += zTextureSpec(SCREEN_TEXTURE, UV + dir * 4.6153846154).rgb * 0.054054;
+    sum += zTextureSpec(SCREEN_TEXTURE, UV - dir * 4.6153846154).rgb * 0.054054;
+    sum += zTextureSpec(SCREEN_TEXTURE, UV + dir * 5.9230769231).rgb * 0.016216;
+    sum += zTextureSpec(SCREEN_TEXTURE, UV - dir * 5.9230769231).rgb * 0.016216;
+    
+    COLOR = vec4(sum * bright * BLOOM_INTENSITY, 1.0);
+}

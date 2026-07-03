@@ -1,0 +1,54 @@
+﻿// Fake Normal Lighting — EXTREME TEST VERSION
+// Generates fake normals from texture gradients
+uniform highp float FAKE_NORMAL_STRENGTH = 5.0;
+uniform highp float LIGHT_WRAP = 0.3;
+uniform highp float LIGHT_INTENSITY = 3.0;
+
+void fragment() {
+    highp vec4 color = zTexture(UV);
+    
+    if (color.a < 0.01) {
+        COLOR = color;
+        return;
+    }
+    
+    // Sample 4 neighbors with larger radius
+    highp vec2 px = TEXTURE_PIXEL_SIZE * 2.0;
+    
+    highp float lLuma = zGrayscale(zTexture(UV - vec2(px.x, 0.0)).rgb);
+    highp float rLuma = zGrayscale(zTexture(UV + vec2(px.x, 0.0)).rgb);
+    highp float uLuma = zGrayscale(zTexture(UV - vec2(0.0, px.y)).rgb);
+    highp float dLuma = zGrayscale(zTexture(UV + vec2(0.0, px.y)).rgb);
+    
+    // Gradient
+    highp float dx = (lLuma - rLuma) * FAKE_NORMAL_STRENGTH;
+    highp float dy = (uLuma - dLuma) * FAKE_NORMAL_STRENGTH;
+    
+    // Fake normal
+    highp vec3 N = normalize(vec3(dx, dy, 1.0));
+    
+    // Light direction
+    highp vec3 L = normalize(vec3(0.5, 0.8, 1.0));
+    
+    // Lambert + wrap
+    highp float NdotL = dot(N, L);
+    highp float light = (NdotL + LIGHT_WRAP) / (1.0 + LIGHT_WRAP);
+    light = clamp(light, 0.0, 1.0);
+    
+    // Curvature
+    highp float curvature = abs(dx) + abs(dy);
+    highp float shadow = 1.0 - clamp(curvature * 0.15, 0.0, 0.5);
+    
+    // EXTREME range — should be VERY visible
+    highp float fakeLight = 0.3 + light * LIGHT_INTENSITY * shadow;
+    fakeLight = clamp(fakeLight, 0.2, 3.0);
+    
+    // Tint shadows slightly blue, highlights slightly warm
+    highp vec3 shadowTint = vec3(0.7, 0.75, 1.0);
+    highp vec3 highlightTint = vec3(1.1, 1.05, 0.95);
+    
+    highp vec3 lit = mix(color.rgb * shadowTint, color.rgb * highlightTint, light);
+    lit *= fakeLight;
+    
+    COLOR = vec4(lit, color.a);
+}
