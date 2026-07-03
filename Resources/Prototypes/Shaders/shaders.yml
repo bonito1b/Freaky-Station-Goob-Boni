@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2018 clusterfack <8516830+clusterfack@users.noreply.github.com>
+﻿# SPDX-FileCopyrightText: 2018 clusterfack <8516830+clusterfack@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2020 AJCM-git <60196617+AJCM-git@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2020 R. Neuser <rneuser@iastate.edu>
 # SPDX-FileCopyrightText: 2020 Víctor Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
@@ -138,3 +138,72 @@
   id: Hologram
   kind: source
   path: "/Textures/Shaders/hologram.swsl"
+
+# Bloom post-processing shaders
+- type: shader
+  id: BloomBlurX
+  kind: source
+  path: "/Textures/Shaders/bloom_blur_x.swsl"
+  params:
+    BLOOM_THRESHOLD: 0.7
+    BLOOM_INTENSITY: 1.0
+    BLUR_RADIUS: 2.0
+
+- type: shader
+  id: BloomBlurY
+  kind: source
+  path: "/Textures/Shaders/bloom_blur_y.swsl"
+  params:
+    BLOOM_INTENSITY: 1.0
+    BLUR_RADIUS: 2.0
+# ACES Filmic Tone Mapping
+- type: shader
+  id: ToneMapping
+  kind: source
+  path: "/Textures/Shaders/tonemapping.swsl"
+  params:
+    EXPOSURE: 1.0
+
+# Vignette + fake AO
+- type: shader
+  id: Vignette
+  kind: source
+  path: "/Textures/Shaders/vignette.swsl"
+  params:
+    INTENSITY: 0.3
+# Emissive sprite shader - makes objects self-illuminating (pairs with Bloom)
+- type: shader
+  id: Emissive
+  kind: source
+  path: "/Textures/Shaders/emissive.swsl"
+# Combined post-processing (Bloom + Tone Mapping + Vignette + Fake AO + Specular + Streaks + Flare + Reflection)
+- type: shader
+  id: PostProcess
+  kind: source
+  path: "/Textures/Shaders/post_process.swsl"
+  params:
+    BLOOM_THRESHOLD: 0.7
+    BLOOM_INTENSITY: 0.8
+    BLUR_RADIUS: 2.0
+    EXPOSURE: 1.0
+    VIGNETTE_INTENSITY: 0.3
+    SPECULAR_INTENSITY: 0.5
+    STREAK_INTENSITY: 0.4
+    FLARE_INTENSITY: 0.3
+    REFLECTION_INTENSITY: 0.25
+
+# Animated glints shader for sprites (weapons, doors, monitors, glass)
+- type: shader
+  id: Glints
+  kind: source
+  path: "/Textures/Shaders/glints.swsl"
+
+# Fake Normal Lighting — generates normals from texture gradients
+- type: shader
+  id: FakeNormal
+  kind: source
+  path: "/Textures/Shaders/fake_normal.swsl"
+  params:
+    FAKE_NORMAL_STRENGTH: 5.0
+    LIGHT_WRAP: 0.3
+    LIGHT_INTENSITY: 3.0

@@ -1,0 +1,19 @@
+﻿// Emissive enhancement shader for sprites
+// Multiplies brightness and adds subtle pulse to simulate self-illumination
+// Use on sprites with: shader: Emissive
+
+void fragment() {
+    highp vec4 color = zTexture(UV);
+    
+    // Boost brightness for emissive objects
+    highp vec3 emissive = color.rgb * 1.5;
+    
+    // Subtle pulse (2 second cycle) - TIME is provided by engine
+    highp float pulse = 0.05 * sin(TIME * 3.14159);
+    emissive += color.rgb * pulse;
+    
+    // Clamp to prevent overflow
+    emissive = clamp(emissive, 0.0, 2.0);
+    
+    COLOR = vec4(emissive, color.a);
+}

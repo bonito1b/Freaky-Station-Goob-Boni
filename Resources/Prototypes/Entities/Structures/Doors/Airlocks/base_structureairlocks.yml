@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2018 clusterfack <clusterfack@users.noreply.github.com>
+﻿# SPDX-FileCopyrightText: 2018 clusterfack <clusterfack@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2019 DamianX <DamianX@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2019 L.E.D <10257081+unusualcrow@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2019 Odin Hultgren Van Der Horst <odinhorst@hotmail.com>
@@ -106,6 +106,7 @@
   - type: InteractionOutline
   - type: Sprite
     sprite: Structures/Doors/Airlocks/Standard/basic.rsi
+    shader: FakeNormal
     snapCardinals: true
     layers:
     - state: closed
@@ -295,6 +296,7 @@
     enabled: false
   - type: Sprite
     sprite: Structures/Doors/Airlocks/Glass/glass.rsi
+    shader: FakeNormal
   - type: AnimationPlayer
   - type: Fixtures
     fixtures:

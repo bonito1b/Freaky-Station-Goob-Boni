@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 Git-Nivrak <59925169+Git-Nivrak@users.noreply.github.com>
+﻿# SPDX-FileCopyrightText: 2020 Git-Nivrak <59925169+Git-Nivrak@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2020 Paul Ritter <ritter.paul1@googlemail.com>
 # SPDX-FileCopyrightText: 2020 Peter Wedder <burneddi@gmail.com>
 # SPDX-FileCopyrightText: 2020 Víctor Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
@@ -47,6 +47,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/frame.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/frame.rsi
     state: full
@@ -104,6 +105,7 @@
   - type: SpriteFade
   - type: Sprite
     sprite: Structures/Furniture/Tables/frame.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/frame.rsi
     state: full
@@ -161,6 +163,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/frame.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/frame.rsi
     state: full
@@ -206,6 +209,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/generic.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/generic.rsi
   - type: Damageable
@@ -253,6 +257,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/reinforced.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/reinforced.rsi
   - type: Destructible
@@ -302,6 +307,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/glass.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/glass.rsi
   - type: GlassTable
@@ -358,6 +364,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/card.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/card.rsi
   - type: GlassTable #they named it that cause 'it would never be used elsewhere' or something, smh
@@ -413,6 +420,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/r_glass.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/r_glass.rsi
   - type: GlassTable
@@ -472,6 +480,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/plasma.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/plasma.rsi
   - type: GlassTable
@@ -531,6 +540,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/brass.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/brass.rsi
   - type: Damageable
@@ -576,6 +586,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/wood.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/wood.rsi
   - type: Damageable
@@ -628,6 +639,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/carpet.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/carpet.rsi
   - type: Damageable
@@ -683,6 +695,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/stone.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/stone.rsi
   - type: Destructible
@@ -714,6 +727,7 @@
     damageModifierSet: Web
   - type: Sprite
     sprite: Structures/Furniture/Tables/web.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/web.rsi
   - type: Destructible
@@ -789,6 +803,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/Fancy/blue.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/Fancy/blue.rsi
   - type: Construction
@@ -804,6 +819,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/Fancy/cyan.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/Fancy/cyan.rsi
   - type: Construction
@@ -819,6 +835,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/Fancy/black.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/Fancy/black.rsi
   - type: Construction
@@ -834,6 +851,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/Fancy/red.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/Fancy/red.rsi
   - type: Construction
@@ -849,6 +867,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/Fancy/purple.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/Fancy/purple.rsi
   - type: Construction
@@ -864,6 +883,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/Fancy/pink.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/Fancy/pink.rsi
   - type: Construction
@@ -879,6 +899,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/Fancy/green.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/Fancy/green.rsi
   - type: Construction
@@ -894,6 +915,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/Fancy/orange.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/Fancy/orange.rsi
   - type: Construction
@@ -909,6 +931,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/Fancy/white.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/Fancy/white.rsi
   - type: Construction
@@ -932,6 +955,7 @@
       - Table # goob
   - type: Sprite
     sprite: Structures/Furniture/Tables/debug.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/debug.rsi
   - type: Destructible
@@ -953,6 +977,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/counterwood.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/counterwood.rsi
     state: full
@@ -999,6 +1024,7 @@
   components:
   - type: Sprite
     sprite: Structures/Furniture/Tables/countermetal.rsi
+    shader: FakeNormal
   - type: Icon
     sprite: Structures/Furniture/Tables/countermetal.rsi
     state: full

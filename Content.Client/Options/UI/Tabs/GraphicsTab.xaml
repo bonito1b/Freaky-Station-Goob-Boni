@@ -34,6 +34,19 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 <CheckBox Name="ParallaxLowQualityCheckBox" Text="{Loc 'ui-options-parallax-low-quality'}" />
                 <CheckBox Name="AmbientOcclusionCheckBox" Text="{Loc 'ui-options-ambient-occlusion'}" />
 
+                <!-- RTX Edition -->
+                <Label Text="{Loc 'ui-options-rtx-label'}" StyleClasses="LabelKeyText"/>
+                <CheckBox Name="BloomEnabledCheckBox" Text="{Loc 'ui-options-bloom-enabled'}" />
+                <ui:OptionSlider Name="BloomIntensitySlider" Title="{Loc 'ui-options-bloom-intensity'}" />
+                <ui:OptionSlider Name="BloomThresholdSlider" Title="{Loc 'ui-options-bloom-threshold'}" />
+                <CheckBox Name="ToneMappingEnabledCheckBox" Text="{Loc 'ui-options-tonemapping-enabled'}" />
+                <ui:OptionSlider Name="ToneMappingExposureSlider" Title="{Loc 'ui-options-tonemapping-exposure'}" />
+                <CheckBox Name="VignetteEnabledCheckBox" Text="{Loc 'ui-options-vignette-enabled'}" />
+                <CheckBox Name="FakeNormalEnabledCheckBox" Text="{Loc 'ui-options-fakenormal-enabled'}" />
+                <ui:OptionSlider Name="FakeNormalStrengthSlider" Title="{Loc 'ui-options-fakenormal-strength'}" />
+                <ui:OptionSlider Name="FakeLightWrapSlider" Title="{Loc 'ui-options-fakelight-wrap'}" />
+                <ui:OptionSlider Name="FakeLightIntensitySlider" Title="{Loc 'ui-options-fakelight-intensity'}" />
+
                 <!-- Interface -->
                 <Label Text="{Loc 'ui-options-interface-label'}" StyleClasses="LabelKeyText"/>
                 <ui:OptionDropDown Name="DropDownUIScale" Title="{Loc 'ui-options-scale-label'}" />

@@ -1,0 +1,152 @@
+﻿// RTX Edition - Combined Post-Processing
+// Bloom + Tone Mapping + Vignette + Fake AO + Specular + Light Streaks + Lens Flare + Floor Reflection
+// Single-pass shader. Effects disabled by setting intensity to 0.
+uniform sampler2D SCREEN_TEXTURE;
+uniform highp float BLOOM_THRESHOLD = 0.7;
+uniform highp float BLOOM_INTENSITY = 0.8;
+uniform highp float BLUR_RADIUS = 2.0;
+uniform highp float EXPOSURE = 1.0;
+uniform highp float VIGNETTE_INTENSITY = 0.3;
+uniform highp float SPECULAR_INTENSITY = 0.5;
+uniform highp float STREAK_INTENSITY = 0.4;
+uniform highp float FLARE_INTENSITY = 0.3;
+uniform highp float REFLECTION_INTENSITY = 0.25;
+
+void fragment() {
+    highp vec4 original = zTextureSpec(SCREEN_TEXTURE, UV);
+    highp vec3 color = original.rgb;
+    highp float luma = zGrayscale(color);
+
+    // === FAKE SPECULAR HIGHLIGHTS ===
+    // Boost bright pixels with a sharper, whiter sheen (simulates metal/console gloss)
+    if (SPECULAR_INTENSITY > 0.001) {
+        // Sample a small neighborhood for gradient detection
+        highp vec2 px = SCREEN_PIXEL_SIZE * 1.0;
+        highp float l = zGrayscale(zTextureSpec(SCREEN_TEXTURE, UV - vec2(px.x, 0.0)).rgb);
+        highp float r = zGrayscale(zTextureSpec(SCREEN_TEXTURE, UV + vec2(px.x, 0.0)).rgb);
+        highp float u = zGrayscale(zTextureSpec(SCREEN_TEXTURE, UV - vec2(0.0, px.y)).rgb);
+        highp float d = zGrayscale(zTextureSpec(SCREEN_TEXTURE, UV + vec2(0.0, px.y)).rgb);
+
+        // Light gradient = near a light source hitting a surface
+        highp float lightGradient = max(0.0, (luma - l) + (luma - r) + (luma - u) + (luma - d));
+        lightGradient = smoothstep(0.3, 1.5, lightGradient);
+
+        // Sharpen bright spots — add white sheen where luma is high
+        highp float specMask = smoothstep(0.6, 0.95, luma);
+        highp float specular = (specMask * 0.7 + lightGradient * 0.3) * SPECULAR_INTENSITY;
+
+        // Add slightly desaturated (whiter) highlight
+        highp vec3 specColor = mix(color, vec3(dot(color, vec3(0.333))), 0.5) * specular;
+        color += specColor;
+    }
+
+    // === LIGHT STREAKS (horizontal) ===
+    // Bright pixels emit horizontal light bars
+    if (STREAK_INTENSITY > 0.001) {
+        highp float bright = max(0.0, luma - BLOOM_THRESHOLD) / max(0.001, 1.0 - BLOOM_THRESHOLD);
+        bright = smoothstep(0.0, 1.0, bright);
+
+        if (bright > 0.01) {
+            // Sample horizontally with decreasing weight
+            highp vec3 streak = vec3(0.0);
+            highp float wsum = 0.0;
+            for (int i = 1; i <= 6; i++) {
+                highp float fi = float(i);
+                highp float w = 1.0 / (fi * 0.5 + 1.0);
+                highp vec2 off = vec2(SCREEN_PIXEL_SIZE.x * fi * 4.0, 0.0);
+                streak += zTextureSpec(SCREEN_TEXTURE, UV + off).rgb * w;
+                streak += zTextureSpec(SCREEN_TEXTURE, UV - off).rgb * w;
+                wsum += w * 2.0;
+            }
+            streak /= max(wsum, 0.001);
+            highp float streakLuma = zGrayscale(streak);
+            streakLuma = smoothstep(0.5, 0.9, streakLuma);
+            color += streak * bright * STREAK_INTENSITY * streakLuma;
+        }
+    }
+
+    // === LENS FLARE (stylized sci-fi) ===
+    // Simple anamorphic-style horizontal flare from very bright pixels
+    if (FLARE_INTENSITY > 0.001) {
+        highp float veryBright = smoothstep(0.85, 1.0, luma);
+        if (veryBright > 0.01) {
+            // Horizontal blue-tinted streak (anamorphic flare)
+            highp vec2 flareOff = vec2(SCREEN_PIXEL_SIZE.x * 8.0, 0.0);
+            highp float flare = 0.0;
+            for (int i = 1; i <= 4; i++) {
+                highp float fi = float(i);
+                highp float w = 1.0 / (fi + 1.0);
+                flare += zGrayscale(zTextureSpec(SCREEN_TEXTURE, UV + flareOff * fi).rgb) * w;
+                flare += zGrayscale(zTextureSpec(SCREEN_TEXTURE, UV - flareOff * fi).rgb) * w;
+            }
+            flare /= 4.0;
+            // Blue-cyan tint for sci-fi feel
+            highp vec3 flareColor = vec3(0.3, 0.5, 1.0) * flare * veryBright * FLARE_INTENSITY;
+            color += flareColor;
+        }
+    }
+
+    // === BLOOM (single-pass 5x5 kernel) ===
+    if (BLOOM_INTENSITY > 0.001) {
+        highp vec3 bloomSum = vec3(0.0);
+        highp float totalWeight = 0.0;
+        for (int x = -2; x <= 2; x++) {
+            for (int y = -2; y <= 2; y++) {
+                highp vec2 offset = vec2(float(x), float(y)) * SCREEN_PIXEL_SIZE * BLUR_RADIUS;
+                highp vec3 sampleCol = zTextureSpec(SCREEN_TEXTURE, UV + offset).rgb;
+                highp float sLuma = zGrayscale(sampleCol);
+                highp float bright = max(0.0, sLuma - BLOOM_THRESHOLD) / max(0.001, 1.0 - BLOOM_THRESHOLD);
+                bright = smoothstep(0.0, 1.0, bright);
+                highp float dist = length(vec2(float(x), float(y)));
+                highp float weight = exp(-dist * dist * 0.5);
+                bloomSum += sampleCol * bright * weight;
+                totalWeight += weight;
+            }
+        }
+        bloomSum /= max(totalWeight, 0.001);
+        color += bloomSum * BLOOM_INTENSITY;
+    }
+
+    // === FAKE FLOOR REFLECTION ===
+    // Sample from below current pixel, blur it, add as weak reflection
+    if (REFLECTION_INTENSITY > 0.001) {
+        highp vec2 reflOff = vec2(0.0, SCREEN_PIXEL_SIZE.y * 3.0);
+        highp vec3 reflection = vec3(0.0);
+        highp float rwsum = 0.0;
+        for (int i = 1; i <= 3; i++) {
+            highp float fi = float(i);
+            highp float w = 1.0 / fi;
+            reflection += zTextureSpec(SCREEN_TEXTURE, UV + reflOff * fi).rgb * w;
+            rwsum += w;
+        }
+        reflection /= max(rwsum, 0.001);
+        // Only add reflection to darker (floor-like) pixels
+        highp float reflMask = smoothstep(0.0, 0.3, 1.0 - luma);
+        color += reflection * reflMask * REFLECTION_INTENSITY;
+    }
+
+    // === TONE MAPPING (ACES Filmic) ===
+    if (abs(EXPOSURE - 1.0) > 0.001) {
+        color *= EXPOSURE;
+        highp vec3 a = color * (color + 0.0245786) - 0.000090537;
+        highp vec3 b = color * (0.983729 * color + 0.4329510) + 0.238081;
+        color = clamp(a / b, 0.0, 1.0);
+    }
+
+    // === VIGNETTE + FAKE AO ===
+    if (VIGNETTE_INTENSITY > 0.001) {
+        highp float dist = distance(UV, vec2(0.5, 0.5));
+        highp float vignette = 1.0 - smoothstep(0.3, 0.85, dist) * VIGNETTE_INTENSITY;
+        highp vec2 px2 = SCREEN_PIXEL_SIZE * 1.5;
+        highp float nLuma = (
+            zGrayscale(zTextureSpec(SCREEN_TEXTURE, UV + vec2(px2.x, 0.0)).rgb) +
+            zGrayscale(zTextureSpec(SCREEN_TEXTURE, UV - vec2(px2.x, 0.0)).rgb) +
+            zGrayscale(zTextureSpec(SCREEN_TEXTURE, UV + vec2(0.0, px2.y)).rgb) +
+            zGrayscale(zTextureSpec(SCREEN_TEXTURE, UV - vec2(0.0, px2.y)).rgb)
+        ) * 0.25;
+        highp float edgeDarken = clamp((nLuma - zGrayscale(original.rgb)) * 0.4, 0.0, 0.2);
+        color *= clamp(vignette - edgeDarken, 0.0, 1.0);
+    }
+
+    COLOR = vec4(color, original.a);
+}
