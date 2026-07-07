@@ -13,20 +13,13 @@
 
   # Midpop 25–55
   # - CorvaxAmber
-  - CorvaxAwesome
   - CorvaxBagel
-  #- CorvaxMarathon
-  - CorvaxPaper
-  #- CorvaxPearl
-  - CorvaxVoid
 
   # Lowpop 0–25
-  - CorvaxOutpost
-  - CorvaxMascara
   - CorvaxMaus
   - FreakyOmega # Freaky
   - FreakySaltern # Freaky
-  - CorvaxPacked
+  - FreakyOmegaNew # Freaky
   # - CorvaxSilly
   # - Atlas
   - Amber
@@ -39,16 +32,10 @@
   - Fland
  # - Gate Goobstation - My name is Walter Hartwell White, I live at 2308 Negra alloya line albequrque new mexico.
   #- Loop Goobstation - I love maintenance!!!
-  - Marathon
-  - Meta
-  - Oasis
-  - Origin
   # - Saltern
   - MiniPacked
   #- Reach # Goobstation, removed from map pool
   #- Train # Goobstation - all my friends hate train
-  - FlandHighPop
-  - OasisHighPop
   - Barratry # Goobstation - Re-add barratry
   - Kettle # Goobstation - Re-add kettle (before it was gemini!)
   - Leonid # Goobstation - for goob by goob
