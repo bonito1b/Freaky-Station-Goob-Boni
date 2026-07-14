@@ -1,0 +1,64 @@
+- type: entity
+  name: ANIvarm
+  parent: MobFox
+  id: anivarm
+  description: Это МАть егО АНИварм
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: Mobs/Animals/ani.rsi
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base", "movement"]
+      state: fox
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: fox
+      Critical:
+        Base: fox_dead
+      Dead:
+        Base: fox_dead
+  - type: SpriteMovement
+    movementLayers:
+      movement:
+        state: fox-moving
+    noMovementLayers:
+      movement:
+        state: fox
+  - type: InteractionPopup
+    successChance: 1
+    interactSuccessString: petting-success-soft-floofy
+    interactFailureString: petting-failure-generic
+    interactSuccessSpawn: EffectHearts
+    interactSuccessSound:
+      path: Audio\_FreakStation\goyda.ogg
+  - type: Butcherable
+    spawned:
+    - id: MaterialBSCrystal1
+      amount: 3
+  - type: MeleeWeapon
+    angle: 0
+    animation: WeaponArcBite
+    soundHit:
+      path: /Audio/Effects/animeow.ogg
+    damage:
+      types:
+        Piercing: 15
+        Poison: 30
+  - type: Grammar
+    attributes:
+      proper: true
+      gender: male
+  - type: Tag
+    tags:
+    - CannotSuicide
+    - VimPilot
+  - type: StealTarget
+    stealGroup: AnimalRenault
+  - type: LanguageKnowledge # Einstein Engines - Language
+    speaks:
+    - Fox
+    - TauCetiBasic
+    understands:
+    - Fox
+    - TauCetiBasic
