@@ -31,7 +31,7 @@
     interactFailureString: petting-failure-generic
     interactSuccessSpawn: EffectHearts
     interactSuccessSound:
-      path: Audio\_FreakStation\goyda.ogg
+      path: /Audio/_FreakStation/goyda.ogg
   - type: Butcherable
     spawned:
     - id: MaterialBSCrystal1
