@@ -14,7 +14,6 @@ public sealed partial class DeusExMachineSystem : AnomalyBaseSystem
 
         SubscribeLocalEvent<DeusExMachinaComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<DeusExMachinaComponent, UseInHandEvent>(OnUse);
-    
 
     }
     public void OnStartup(Entity<DeusExMachinaComponent> ent, ref ComponentStartup args)
@@ -23,7 +22,8 @@ public sealed partial class DeusExMachineSystem : AnomalyBaseSystem
     }
     public void OnUse(Entity<DeusExMachinaComponent> ent, ref UseInHandEvent args)
     {
-       EnsureComp<TimeLoopComponent>(ent);
+       EnsureComp<TimeLoopComponent>(args.User);
+       _popup.PopupEntity(Loc.GetString("anomaly-item-user"), args.User);
     }
 
 }

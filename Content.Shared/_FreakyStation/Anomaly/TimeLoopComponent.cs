@@ -8,10 +8,7 @@ namespace Content.Shared._FreakyStation.Anomaly;
 public partial class TimeLoopComponent : Component
 {
     [DataField, AutoNetworkedField]
-    public EntityCoordinates? Coords;
-
-    [DataField, AutoNetworkedField]
-    public MapId? MapId;
+    public MapCoordinates Coords;
 
     [ViewVariables]
     public bool IsActive = true;
