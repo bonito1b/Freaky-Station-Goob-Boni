@@ -1,0 +1,13 @@
+
+- type: entity
+  name: крутая штука деус
+  id: DeusExMachina
+  components:
+  - type: DeusExMachinaComponent
+  - type: Item
+    size: Normal
+    sprite: Objects/Weapons/Melee/cane_blade.rsi
+  - type: Sprite
+    sprite: Objects/Weapons/Melee/cane_blade.rsi
+    state: icon
+    
